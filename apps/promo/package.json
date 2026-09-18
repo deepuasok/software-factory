@@ -6,8 +6,8 @@
   "scripts": {
     "sync-css": "cp ../../packages/ui/src/styles.css src/style.css",
     "studio": "cp ../../packages/ui/src/styles.css src/style.css && remotion studio src/index.ts",
-    "render": "cp ../../packages/ui/src/styles.css src/style.css && remotion render src/index.ts SoftwareFactory out/software-factory.mp4 --codec h264",
-    "render:gif": "cp ../../packages/ui/src/styles.css src/style.css && remotion render src/index.ts SoftwareFactory out/software-factory.gif --codec gif --every-nth-frame 2 --scale 0.5",
+    "render": "cp ../../packages/ui/src/styles.css src/style.css && remotion render src/index.ts SoftwareFactory out/software-factory.mp4 --codec h264 --crf 16 --scale 2",
+    "render:gif": "cp ../../packages/ui/src/styles.css src/style.css && remotion render src/index.ts SoftwareFactory out/software-factory.gif --codec gif --every-nth-frame 3 --scale 0.7",
     "still": "cp ../../packages/ui/src/styles.css src/style.css && remotion still src/index.ts SoftwareFactory out/still.png"
   },
   "dependencies": {
