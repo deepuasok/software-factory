@@ -13,7 +13,7 @@ export const EndCard = () => {
         github.com/deepuasok/software-factory
       </div>
       <div style={{ position: "absolute", bottom: 36, color: "rgba(255,255,255,.45)", fontSize: 15, ...enter(f, 30) }}>
-        Music: "Carefree" by Kevin MacLeod (incompetech.com), CC BY 4.0
+        Music: "Pamgaea" by Kevin MacLeod (incompetech.com), CC BY 4.0
       </div>
       <div style={{ display: "flex", gap: 10, marginTop: 44 }}>
         {series.map((c, i) => (
