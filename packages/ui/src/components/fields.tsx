@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { cx } from "./primitives";
+import { color } from "../tokens";
 
 /* Field wrapper -------------------------------------------------------- */
 
@@ -108,7 +109,7 @@ export function SearchInput({
         height="15"
         className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
         fill="none"
-        stroke="#56657E"
+        stroke={color.muted}
         strokeWidth="2"
         aria-hidden
       >

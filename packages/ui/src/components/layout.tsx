@@ -2,6 +2,7 @@
 
 import React from "react";
 import { cx } from "./primitives";
+import { color } from "../tokens";
 
 /* App shell ------------------------------------------------------------ */
 
@@ -177,7 +178,7 @@ export function EmptyState({
   return (
     <div className="cx-card flex flex-col items-center text-center px-6 py-12">
       <div className="w-10 h-10 rounded-lg bg-surface-grey grid place-items-center mb-3">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#56657E" strokeWidth="1.8" aria-hidden>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke={color.muted} strokeWidth="1.8" aria-hidden>
           <rect x="3" y="4" width="18" height="16" rx="2" />
           <path d="M3 9h18M8 4v16" />
         </svg>

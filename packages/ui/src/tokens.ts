@@ -33,6 +33,10 @@ export const color = {
   /** Secondary text, labels, units. */
   muted: "#56657E",
 
+  /** Map basemap. Land is a flat silhouette so the dots carry the meaning. */
+  land: "#E8EBF0",
+  landEdge: "#D3D9E2",
+
   /** Status. Use for meaning, never for decoration. */
   error: "#C93623",
   warn: "#B46A00",
@@ -124,3 +128,14 @@ export const motion = {
 
 export const tokens = { color, series, sequential, diverging, rank, font, text, space, radius, size, elevation, motion };
 export default tokens;
+
+/**
+ * The only state vocabulary in the system.
+ *
+ * Every part that expresses state takes `tone?: Tone`. No part takes `color`,
+ * `severity`, `variant: "danger"` or a hex. Meaning is fixed — see docs/TONE.md.
+ */
+export type Tone = "neutral" | "brand" | "ok" | "warn" | "error" | "info";
+
+/** The six tones in reading order. Iterate this when you need all of them. */
+export const TONES: readonly Tone[] = ["neutral", "brand", "ok", "warn", "error", "info"] as const;

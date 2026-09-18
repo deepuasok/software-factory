@@ -133,3 +133,20 @@ html, body {
 }
 
 @tailwind utilities;
+
+/* Print — used by PrintLayout (components/furniture.tsx). Hides the app's
+   own chrome (AppShell's top bar is a <header>) and anything marked
+   .cx-print-hide, so only the report survives to paper. */
+@media print {
+  header,
+  .cx-print-hide {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  .cx-print-layout {
+    max-width: 100% !important;
+    box-shadow: none !important;
+  }
+}

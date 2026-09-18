@@ -6,11 +6,15 @@
     "dev": "next dev --port 8820",
     "build": "next build",
     "start": "next start --port 8820",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev"
   },
   "dependencies": {
     "@factory/ui": "*",
+    "@prisma/client": "^6.19.3",
     "next": "14.2.35",
+    "prisma": "^6.19.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "recharts": "^2.12.7"

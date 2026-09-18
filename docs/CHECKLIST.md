@@ -1,6 +1,8 @@
 # Before you say it is done
 
-Open the app in a browser first. Then answer every line.
+Open the app in a browser first. Then answer every line — and then the two or
+three extra lines your archetype adds, in
+[ARCHETYPES.md](ARCHETYPES.md).
 
 **Look**
 - [ ] No hex colour anywhere under `apps/` — `grep -rn "#[0-9a-fA-F]\{6\}" apps/<app>/` is empty.
@@ -27,3 +29,4 @@ Open the app in a browser first. Then answer every line.
 - [ ] The app was opened in a browser and screenshotted.
 - [ ] Sample data is seeded and labelled as sample data.
 - [ ] `README.md` in the app says what decision it makes, and how to run it.
+- [ ] The archetype's addendum in [ARCHETYPES.md](ARCHETYPES.md) is answered too.

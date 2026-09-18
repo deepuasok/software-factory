@@ -18,11 +18,11 @@ rough prototype, even when someone else's agent built it.
 ## What is in the box
 
 ```
-packages/ui/        The skin. Tokens and 44 components. The only place styling lives.
+packages/ui/        The skin. Tokens, 113 parts and 14 recipes. The only place styling lives.
 apps/_template/     What a new app starts as.
-apps/gallery/       The living style guide: every part, with the rule for using it.
+apps/gallery/       The living style guide: every part and recipe, by archetype.
 apps/…              One folder per app built here.
-docs/               The contract: principles, parts catalogue, checklist, skinning.
+docs/               The contract: principles, archetypes, parts catalogue, data, checklist.
 skill/              The instruction sheet an agent follows.
 ```
 
@@ -66,6 +66,27 @@ Then ask, in plain words:
 The agent copies the template, picks parts, wires real data, and walks
 `docs/CHECKLIST.md` before claiming it works.
 
+## The eight archetypes
+
+Almost every internal tool is one of eight shapes of work. Naming the shape
+first is what stops an app being invented from scratch — pick the archetype,
+start from its recipe, swap the sample data for yours.
+
+| Archetype | The person is | Start from |
+|---|---|---|
+| Monitor & alert | checking whether anything needs them today | `DashboardPage` |
+| Review & disposition | working a list one record at a time | `ReviewQueuePage` |
+| Scenario workbench | changing an assumption and watching it redraw | `ComparePage` |
+| Plan & schedule | putting dated work on a timeline | `SchedulePage` |
+| Reconcile & attribute | choosing which system to believe | `ReconcilePage` |
+| Approve & route | holding the pen on somebody else's work | `ApprovalInboxPage` |
+| Track & follow up | keeping a pile of open work moving | `BoardPage` |
+| Report & readout | reading the sheet, not using the tool | `ReportPage` |
+
+Each one has its own tab in the gallery, its own checklist addendum, and a
+recipe that renders live with sample data. See
+[docs/ARCHETYPES.md](docs/ARCHETYPES.md).
+
 ## The three rules that do the work
 
 1. **No hex codes in an app.** Colour comes from tokens and Tailwind classes.
@@ -76,7 +97,10 @@ The agent copies the template, picks parts, wires real data, and walks
    or border is not.
 
 Everything else follows from those. `docs/PRINCIPLES.md` has the behavioural
-rules; `docs/CHECKLIST.md` is what "done" means.
+rules, `docs/CONTRACTS.md` is what several agents building in parallel agree
+on, `docs/TONE.md` is the six-word state vocabulary, `docs/DATA.md` is the
+seven cross-cutting models every app starts with, and `docs/CHECKLIST.md` is
+what "done" means.
 
 ## Design decisions worth knowing
 

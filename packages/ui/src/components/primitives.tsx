@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { toneClass } from "../tone";
+import { color, type Tone } from "../tokens";
 
 function cx(...parts: (string | false | null | undefined)[]) {
   return parts.filter(Boolean).join(" ");
@@ -61,16 +63,8 @@ export function Button({
 
 /* Badge --------------------------------------------------------------- */
 
-export type BadgeTone = "neutral" | "brand" | "ok" | "warn" | "error" | "info";
-
-const BADGE_TONE: Record<BadgeTone, string> = {
-  neutral: "border border-border-idle text-muted bg-white",
-  brand: "bg-selected text-primary",
-  ok: "bg-[#E6F3EC] text-ok",
-  warn: "bg-[#FBF0DF] text-warn",
-  error: "bg-[#FBE9E6] text-error",
-  info: "bg-[#E4F2FA] text-info",
-};
+/** Kept so older callers keep compiling. `Tone` is the name to use. */
+export type BadgeTone = Tone;
 
 /** A read-only fact about a row: status, category, count. Never clickable. */
 export function Badge({
@@ -78,7 +72,7 @@ export function Badge({
   children,
   className,
 }: {
-  tone?: BadgeTone;
+  tone?: Tone;
   children: React.ReactNode;
   className?: string;
 }) {
@@ -86,7 +80,7 @@ export function Badge({
     <span
       className={cx(
         "inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold whitespace-nowrap",
-        BADGE_TONE[tone],
+        toneClass(tone, "soft"),
         className,
       )}
     >
@@ -119,22 +113,40 @@ export function RankBadge({ rank, prefix = "T" }: { rank: 1 | 2 | 3 | 4; prefix?
 /**
  * A filter you can switch on and off. Chips are for narrowing a list; if the
  * choices are exclusive and few, use Segmented instead.
+ *
+ * `tone` colours the switched-on state — use it when the chip filters by
+ * status, so the chip matches the badge in the rows it keeps. Leave it alone
+ * for an ordinary filter.
  */
 export function Chip({
   on = false,
   onToggle,
   count,
+  tone = "brand",
   children,
   className,
 }: {
   on?: boolean;
   onToggle?: () => void;
   count?: number;
+  tone?: Tone;
   children: React.ReactNode;
   className?: string;
 }) {
+  const toned = tone !== "brand";
   return (
-    <button type="button" data-on={on} onClick={onToggle} className={cx("cx-chip", className)}>
+    <button
+      type="button"
+      data-on={toned ? undefined : on}
+      onClick={onToggle}
+      className={cx(
+        "cx-chip",
+        toned && on && toneClass(tone, "bg"),
+        toned && on && toneClass(tone, "border"),
+        toned && on && "hover:text-white hover:border-current",
+        className,
+      )}
+    >
       {children}
       {count !== undefined && <span className="cx-num opacity-70">· {count}</span>}
     </button>
@@ -151,8 +163,8 @@ export function Label({ children, className }: { children: React.ReactNode; clas
 export function Spinner({ size = 14 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" className="animate-spin" aria-hidden>
-      <circle cx="12" cy="12" r="9" fill="none" stroke="#E5E7EB" strokeWidth="3" />
-      <path d="M21 12a9 9 0 0 0-9-9" fill="none" stroke="#1B3975" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="9" fill="none" stroke={color.edge} strokeWidth="3" />
+      <path d="M21 12a9 9 0 0 0-9-9" fill="none" stroke={color.primary} strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }
