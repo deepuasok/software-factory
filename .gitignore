@@ -1,0 +1,8 @@
+node_modules/
+.next/
+*.tsbuildinfo
+.DS_Store
+
+# Scaffolded by another local session, reads this machine's Claude Code
+# session registry. Not part of the published factory.
+apps/session-desk/
