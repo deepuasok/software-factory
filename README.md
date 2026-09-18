@@ -13,6 +13,10 @@ rules, and an instruction sheet the agent has to follow. Describe an app, and
 what comes back looks like everything else you have shipped — even when it is a
 rough prototype, even when someone else's agent built it.
 
+![the factory in thirty seconds](docs/software-factory.gif)
+
+*Thirty seconds, rendered from the real parts — [MP4](docs/software-factory.mp4). The video is itself an app in this repo (`apps/promo`, built with Remotion), so what moves on screen is the actual button, tile and chart from the bin.*
+
 ![the parts bin](docs/gallery.png)
 
 ## What it looks like

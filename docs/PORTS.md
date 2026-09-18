@@ -13,3 +13,5 @@ One app, one port, so two can run side by side without a fight.
 | 8826+ | next free port for a new app |
 
 Never kill a dev server by port. Kill the process id you started.
+
+`apps/promo` is not a web app: `npm run studio --workspace @factory/promo` opens the Remotion studio, `npm run render --workspace @factory/promo` writes the MP4.
