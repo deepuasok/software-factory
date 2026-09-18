@@ -13,12 +13,9 @@ rules, and an instruction sheet the agent has to follow. Describe an app, and
 what comes back looks like everything else you have shipped — even when it is a
 rough prototype, even when someone else's agent built it.
 
-![the factory in thirty seconds](docs/software-factory.gif)
-
-*Thirty seconds, rendered from the real parts. The GIF above is silent — **[watch it with sound](https://github.com/deepuasok/software-factory/blob/main/docs/software-factory.mp4)** (opens GitHub's player). The video is itself an app in this repo (`apps/promo`, built with Remotion), so what moves on screen is the actual button, tile and chart from the bin. Music: "Pamgaea" by Kevin MacLeod, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).*
-
-
 https://github.com/user-attachments/assets/fcb54591-9ee0-4d3c-85b3-03dc6e72b52d
+
+*Thirty seconds, rendered from the real parts. The video is itself an app in this repo (`apps/promo`, built with Remotion), so what moves on screen is the actual button, tile and chart from the bin. Music: "Pamgaea" by Kevin MacLeod, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).*
 
 
 
