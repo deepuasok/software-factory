@@ -46,6 +46,7 @@ export default function Plan() {
 
   return (
     <AppShell
+      brand="ACME"
       product="Contract Renewals"
       breadcrumb={<Link href="/" className="hover:text-white">All contracts</Link>}
       width="full"

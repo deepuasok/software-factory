@@ -7,7 +7,7 @@ See them live: `npm run gallery` → http://localhost:8821
 
 | Part | Use it when |
 |---|---|
-| `AppShell` | Every route. `width="wide"` for pages, `width="full"` for builder screens. |
+| `AppShell` | Every route. `width="wide"` for pages, `width="full"` for builder screens. `brand` is your wordmark — the demos use `ACME`. |
 | `TopBar` | Comes with AppShell. Product name, breadcrumb, at most two actions. |
 | `PageHeader` | Top of a page: title, badges, one supporting line, the page actions. |
 | `Card` | Any white surface. `padded={false}` when it holds a table or list. |

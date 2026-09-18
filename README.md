@@ -26,6 +26,9 @@ docs/               The contract: principles, parts catalogue, checklist, skinni
 skill/              The instruction sheet an agent follows.
 ```
 
+Screens ship under a placeholder wordmark, ACME. Swap it for yours with a
+single prop.
+
 The skin is deliberately plain: a restrained navy-and-grey enterprise look,
 13px base type, dense tables, flat cards. It is built for working tools that
 sit next to a spreadsheet, not for a marketing site. Swap it for your own brand

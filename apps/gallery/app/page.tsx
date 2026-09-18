@@ -52,6 +52,7 @@ export default function Gallery() {
 
   return (
     <AppShell
+      brand="ACME"
       product="Design System"
       breadcrumb="Parts and rules"
       topBarRight={<Button variant="primary" size="sm" onClick={() => setOpen(true)}>Open a modal</Button>}

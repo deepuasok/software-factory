@@ -18,7 +18,7 @@ export default function ContractDetail({ params }: { params: { id: string } }) {
 
   if (!contract) {
     return (
-      <AppShell product="Contract Renewals" breadcrumb="Not found">
+      <AppShell brand="ACME" product="Contract Renewals" breadcrumb="Not found">
         <EmptyState
           title="No such contract"
           body="This id is not in the sample data."
@@ -39,6 +39,7 @@ export default function ContractDetail({ params }: { params: { id: string } }) {
 
   return (
     <AppShell
+      brand="ACME"
       product="Contract Renewals"
       breadcrumb={<Link href="/" className="hover:text-white">All contracts</Link>}
       topBarRight={<Link href="/plan"><Button variant="primary" size="sm">Build the renewal plan</Button></Link>}

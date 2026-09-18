@@ -45,6 +45,7 @@ export default function Dashboard() {
 
   return (
     <AppShell
+      brand="ACME"
       product="Contract Renewals"
       breadcrumb="All contracts"
       topBarRight={
