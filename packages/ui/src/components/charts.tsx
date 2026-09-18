@@ -25,6 +25,7 @@ import {
 import { series as SERIES, sequential, color, type Tone } from "../tokens";
 import { toneHex } from "../tone";
 import { cx } from "./primitives";
+import { useTheme } from "../theme";
 import { DataTable, DeltaValue, type Column } from "./data";
 
 /**
@@ -41,9 +42,10 @@ import { DataTable, DeltaValue, type Column } from "./data";
  *  - Two or more series always get a legend.
  */
 
-const AXIS = { fontSize: 10, fill: color.muted, fontFamily: "Roboto, sans-serif" };
+const axisStyle = (c: { muted: string }) => ({ fontSize: 10, fill: c.muted, fontFamily: "Roboto, sans-serif" });
 
 function ChartTooltip({ active, payload, label, valueFormat, sortByValue }: any) {
+  const { color } = useTheme();
   if (!active || !payload?.length) return null;
   const items = sortByValue ? [...payload].sort((a: any, b: any) => b.value - a.value) : payload;
   return (
@@ -148,6 +150,8 @@ export function TrendChart({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const [hidden, setHidden] = useState<Set<string>>(new Set());
   const tone = { warn: color.warn, error: color.error, muted: color.muted };
   const toggle = (key: string) => {
@@ -190,9 +194,9 @@ export function TrendChart({
               key={i}
               x1={a.x1}
               x2={a.x2}
-              fill={toneHex(a.tone ?? "info")}
+              fill={toneHex(a.tone ?? "info", color)}
               fillOpacity={0.1}
-              label={a.label ? { value: a.label, position: "insideTop", fill: toneHex(a.tone ?? "info"), fontSize: 10 } : undefined}
+              label={a.label ? { value: a.label, position: "insideTop", fill: toneHex(a.tone ?? "info", color), fontSize: 10 } : undefined}
             />
           ))}
           {yTarget !== undefined && (
@@ -313,6 +317,8 @@ export function CategoryBars({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   return (
     <div className={className}>
       <ResponsiveContainer width="100%" height={height}>
@@ -374,6 +380,8 @@ export function Sparkline({
   height?: number;
   tone?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   if (values.length < 2) return null;
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -400,6 +408,8 @@ export function MilestoneRail({
   items: { label: string; date: string }[];
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   return (
     <div className={cx("relative flex items-start justify-between pt-3", className)}>
       <div className="absolute left-0 right-0 top-[15px] h-[3px] rounded-full bg-selected" />
@@ -437,6 +447,8 @@ export function StackedBars({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   return (
     <div className={className}>
       <ResponsiveContainer width="100%" height={height}>
@@ -502,6 +514,8 @@ export function Histogram({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const fmt = valueFormat ?? ((v: number) => v.toFixed(1));
   const data = useMemo(() => {
     if (!values.length) return [];
@@ -582,6 +596,8 @@ export function Scatter({
   onHover?: (key: string | null) => void;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const fmt = valueFormat ?? ((v: number) => String(v));
   const hasSize = data.some((d) => d.size !== undefined);
   return (
@@ -618,7 +634,7 @@ export function Scatter({
           >
             {data.map((d) => {
               const on = !highlightKey || d.key === highlightKey;
-              return <Cell key={d.key} fill={on ? toneHex("brand") : toneHex("neutral")} fillOpacity={on ? 0.85 : 0.35} />;
+              return <Cell key={d.key} fill={on ? toneHex("brand", color) : toneHex("neutral", color)} fillOpacity={on ? 0.85 : 0.35} />;
             })}
           </RScatter>
         </ScatterChart>
@@ -643,6 +659,8 @@ export function Heatmap({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const fmt = valueFormat ?? ((v: number) => String(v));
   const [hover, setHover] = useState<string | null>(null);
   const { lookup, min, max } = useMemo(() => {
@@ -718,6 +736,8 @@ export function Waterfall({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const fmt = valueFormat ?? ((v: number) => String(v));
   const rows = useMemo<WaterfallRow[]>(() => {
     let running = start;
@@ -808,6 +828,8 @@ export function Funnel({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const fmt = valueFormat ?? ((v: number) => String(v));
   const max = stages[0]?.value || 1;
   return (
@@ -856,6 +878,8 @@ export function SmallMultiples({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const domain = useMemo<[number, number]>(() => {
     const all: number[] = [];
     panels.forEach((p) =>
@@ -900,6 +924,8 @@ export function RankedBars({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const sorted = useMemo(() => [...data].sort((a, b) => b.value - a.value), [data]);
   const activeKey = highlightKey ?? sorted[0]?.key;
   const max = Math.max(...sorted.map((d) => d.value), 1);
@@ -923,7 +949,7 @@ export function RankedBars({
             <div className="flex-1 h-5 rounded bg-surface-grey overflow-hidden">
               <div
                 className="h-full rounded flex items-center justify-end pr-1.5"
-                style={{ width: `${Math.max(2, (d.value / max) * 100)}%`, background: on ? toneHex("brand") : toneHex("neutral") }}
+                style={{ width: `${Math.max(2, (d.value / max) * 100)}%`, background: on ? toneHex("brand", color) : toneHex("neutral", color) }}
               >
                 <span className="cx-num text-[10px] font-semibold text-white">{fmt(d.value)}</span>
               </div>
@@ -955,6 +981,8 @@ export function DivergingBars({
   valueFormat?: (v: number) => string;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const fmt = valueFormat ?? ((v: number) => String(v));
   const rows = useMemo(() => data.map((d) => ({ ...d, delta: d.value - baseline })), [data, baseline]);
 
@@ -1025,6 +1053,8 @@ export function ScenarioCompare({
   values: Record<string, Record<string, number>>;
   className?: string;
 }) {
+  const { color } = useTheme();
+  const AXIS = axisStyle(color);
   const columns: Column<ScenarioMetric>[] = [
     {
       key: "metric",

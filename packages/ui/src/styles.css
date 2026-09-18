@@ -18,12 +18,20 @@ html, body {
   font-family: 'Roboto', system-ui, sans-serif;
   font-size: 13px;
   background: #F9F9F9;
-  color: #071D49;
+  color: var(--cx-secondary);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
 :root {
+  /* The navy default. A ThemeProvider overrides these for everything inside it. */
+  --cx-primary-rgb: 27 57 117;
+  --cx-secondary-rgb: 7 29 73;
+  --cx-selected-rgb: 234 238 245;
+  --cx-border-focus-rgb: 17 135 201;
+  --cx-info-rgb: 17 135 201;
+  --cx-rank-1-rgb: 27 57 117;
+  --cx-rank-2-rgb: 37 99 235;
   --cx-primary: #1B3975;
   --cx-secondary: #071D49;
   --cx-border-idle: #AEB8C6;
@@ -37,7 +45,7 @@ html, body {
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: none;
   border-color: var(--cx-border-focus);
-  box-shadow: 0 0 0 3px rgba(17, 135, 201, 0.18);
+  box-shadow: 0 0 0 3px rgb(var(--cx-border-focus-rgb) / 0.18);
 }
 
 @layer components {
@@ -87,14 +95,14 @@ html, body {
   .cx-btn-lg { height: 40px; padding: 0 18px; font-size: 13px; }
   .cx-btn-sm { height: 28px; padding: 0 10px; font-size: 11px; }
 
-  .cx-btn-primary { background: #1B3975; border-color: #1B3975; color: #fff; }
-  .cx-btn-primary:hover:not(:disabled) { background: #071D49; border-color: #071D49; }
+  .cx-btn-primary { background: var(--cx-primary); border-color: var(--cx-primary); color: #fff; }
+  .cx-btn-primary:hover:not(:disabled) { background: var(--cx-secondary); border-color: var(--cx-secondary); }
 
   .cx-btn-secondary { background: #fff; border-color: var(--cx-border-idle); color: var(--cx-muted); }
-  .cx-btn-secondary:hover:not(:disabled) { border-color: #1B3975; color: #1B3975; }
+  .cx-btn-secondary:hover:not(:disabled) { border-color: var(--cx-primary); color: var(--cx-primary); }
 
   .cx-btn-ghost { background: transparent; border-color: transparent; color: var(--cx-muted); }
-  .cx-btn-ghost:hover:not(:disabled) { background: var(--cx-selected); color: #1B3975; }
+  .cx-btn-ghost:hover:not(:disabled) { background: var(--cx-selected); color: var(--cx-primary); }
 
   .cx-btn-danger { background: #fff; border-color: #C93623; color: #C93623; }
   .cx-btn-danger:hover:not(:disabled) { background: #C93623; color: #fff; }
@@ -111,8 +119,8 @@ html, body {
     white-space: nowrap;
     transition: all 120ms ease;
   }
-  .cx-chip:hover { border-color: #1B3975; color: #1B3975; }
-  .cx-chip[data-on="true"] { background: #1B3975; border-color: #1B3975; color: #fff; }
+  .cx-chip:hover { border-color: var(--cx-primary); color: var(--cx-primary); }
+  .cx-chip[data-on="true"] { background: var(--cx-primary); border-color: var(--cx-primary); color: #fff; }
 
   /* Surfaces -------------------------------------------------------- */
   .cx-card {

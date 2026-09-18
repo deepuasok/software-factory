@@ -31,8 +31,16 @@ request already answers one, skip it and state your reading.
 4. **Does anyone need to explain or overturn a number the system produced?**
    A yes switches on the provenance parts everywhere: source badges, explain
    panels, overrides with reasons, an activity trail.
+5. **Colours: keep the default (navy), or pick another?** Only ask this if
+   `factory.config.json` at the repo root still says `"theme": "navy"` and
+   the person has never been asked. The choices are the themes in
+   `packages/ui/src/themes.ts` (navy, slate, forest, plum), or a brand colour:
+   run `node packages/ui/scripts/make-theme.mjs --name <slug> --primary "#RRGGBB"`,
+   which derives the rest and checks the primary can carry white text. Write
+   the answer to `factory.config.json` so nobody is asked again; every app
+   reads it from there. Never name a company in a theme file that ships.
 
-Answers map to an archetype in `docs/ARCHETYPES.md`. Each archetype names the
+Questions 1–4 map to an archetype in `docs/ARCHETYPES.md`; question 5 is answered once per clone. Each archetype names the
 recipe to start from, the parts it needs, and the checklist addendum that
 defines "done" for that shape.
 

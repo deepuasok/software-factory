@@ -1,5 +1,35 @@
 # Making it your skin
 
+## The short way: pick a theme
+
+Four ship with the factory — **navy (default)**, slate, forest and plum. The
+default needs no action. To use another, set it once in `factory.config.json`
+at the repo root:
+
+```json
+{ "theme": "forest", "brand": "ACME" }
+```
+
+Every app reads that file through its `layout.tsx`, so one line repaints all
+of them. The gallery has a dropdown in its top bar to preview any theme
+against every part before you commit.
+
+To make a theme from your own brand colour:
+
+```bash
+node packages/ui/scripts/make-theme.mjs --name yourco --primary "#0000C9" --label "YourCo blue"
+```
+
+It derives the dark ink, the selection tint, the focus ring and the rank
+bands, refuses a primary too light to carry white text, and registers the
+theme so the dropdown and the config both know it.
+
+A theme changes only the brand chips. Neutrals, the status colours (red, amber,
+green) and the chart series are the same in every theme — that is deliberate,
+so "behind plan" is the same red for every company.
+
+## The long way: change the tokens
+
 The whole look lives in two files. Change them and every app built here
 changes with them — no app touches colour on its own.
 

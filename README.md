@@ -76,8 +76,9 @@ single prop.
 
 The skin is deliberately plain: a restrained navy-and-grey enterprise look,
 13px base type, dense tables, flat cards. It is built for working tools that
-sit next to a spreadsheet, not for a marketing site. Swap it for your own brand
-in about ten minutes — see [docs/SKINNING.md](docs/SKINNING.md).
+sit next to a spreadsheet, not for a marketing site. Four themes ship (navy is the
+default; slate, forest, plum), and one command makes a theme from your own
+brand colour — see [docs/SKINNING.md](docs/SKINNING.md).
 
 ## Try it
 

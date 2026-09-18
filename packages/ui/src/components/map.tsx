@@ -1,5 +1,7 @@
 "use client";
 
+import { useTheme } from "../theme";
+
 import React, { useMemo, useRef, useState } from "react";
 import { WORLD_LAND_PATH } from "../data/world-land";
 import { MAP_H, MAP_W, geoLookup, jitter, project } from "../data/geo";
@@ -91,6 +93,7 @@ export function WorldMap({
   graticule?: boolean;
   showTooltip?: boolean;
 }) {
+  const { color } = useTheme();
   const [view, setView] = useState<View>({ x: 0, y: 0, k: 1 });
   const [tip, setTip] = useState<Tip | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -208,7 +211,7 @@ export function WorldMap({
               cx={p.x}
               cy={p.y}
               r={p.r / shrink}
-              fill={p.active === false ? color.white : p.tone ? toneHex(p.tone) : color.primary}
+              fill={p.active === false ? color.white : p.tone ? toneHex(p.tone, color) : color.primary}
               stroke={p.active === false ? color.borderIdle : color.secondary}
               strokeWidth={1.4 / shrink}
             />
@@ -278,6 +281,7 @@ export function Choropleth({
   height?: number;
   className?: string;
 }) {
+  const { color } = useTheme();
   const [tip, setTip] = useState<{ d: ChoroplethPoint; left: number; top: number } | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const max = useMemo(() => Math.max(...data.map((d) => d.value), 0.0001), [data]);
@@ -365,6 +369,7 @@ export function GeoFilterRail({
   onClear?: () => void;
   className?: string;
 }) {
+  const { color } = useTheme();
   return (
     <div className={cx("flex flex-col gap-2", className)}>
       <div className="flex items-center justify-between">

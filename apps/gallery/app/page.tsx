@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { THEMES, ThemeProvider } from "@factory/ui";
 import {
   AppShell, ApprovalInboxPage, Badge, BarMeter, BoardPage, BuilderPage, Button, Callout,
   CategoryBars, Card, Checkbox, Chip, ComparePage, ConfirmButton, DashboardPage, DataTable, Radio,
@@ -198,6 +199,7 @@ export default function Gallery() {
   const [source, setSource] = useState<"erp" | "pdf" | "grn">("erp");
   const [chips, setChips] = useState<string[]>(["tier1"]);
   const [open, setOpen] = useState(false);
+  const [themeName, setThemeName] = useState("navy");
   const [psm, setPsm] = useState(0.62);
 
   const toggleChip = (k: string) =>
@@ -206,11 +208,24 @@ export default function Gallery() {
   const archetype = ARCHETYPES.find((a) => a.id === view);
 
   return (
+    <ThemeProvider theme={themeName}>
     <AppShell
       brand="ACME"
       product="Design System"
       breadcrumb="Parts, archetypes and recipes"
-      topBarRight={<Button variant="primary" size="sm" onClick={() => setOpen(true)}>Open a modal</Button>}
+      topBarRight={
+        <>
+          {/* One dropdown repaints every part on the page. That is the whole theme system. */}
+          <div style={{ width: 170 }}>
+            <Select small value={themeName} onChange={(e) => setThemeName(e.target.value)} aria-label="Theme">
+              {Object.values(THEMES).map((th) => (
+                <option key={th.name} value={th.name}>{th.label}</option>
+              ))}
+            </Select>
+          </div>
+          <Button variant="primary" size="sm" onClick={() => setOpen(true)}>Open a modal</Button>
+        </>
+      }
     >
       <PageHeader
         title="The parts bin"
@@ -505,5 +520,6 @@ export default function Gallery() {
         </div>
       </Modal>
     </AppShell>
+    </ThemeProvider>
   );
 }

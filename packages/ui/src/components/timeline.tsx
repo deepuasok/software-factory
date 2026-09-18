@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { color, series as SERIES, type Tone } from "../tokens";
 import { toneClass, toneHex } from "../tone";
 import { cx } from "./primitives";
+import { useTheme } from "../theme";
 import { Field, DateInput } from "./fields";
 
 /* Date helpers (package-local, not exported) ---------------------------- */
@@ -81,6 +82,7 @@ export function Gantt({
   onRowClick?: (row: GanttRow) => void;
   className?: string;
 }) {
+  const { color } = useTheme();
   const parsed = useMemo(
     () =>
       rows.map((r) => ({
@@ -269,7 +271,7 @@ export function Gantt({
             {referenceLines.map((rl) => {
               const d = daysBetween(rangeStart, toDate(rl.date));
               if (d < win[0] || d > win[1]) return null;
-              const hex = toneHex(rl.tone ?? "error");
+              const hex = toneHex(rl.tone ?? "error", color);
               return (
                 <g key={rl.label}>
                   <line x1={dayToX(d)} x2={dayToX(d)} y1={HEADER_H} y2={chartHeight} stroke={hex} strokeDasharray="4 3" strokeWidth={1.5} />
@@ -287,7 +289,7 @@ export function Gantt({
               const w = Math.max(2, x1 - x0);
               const y = HEADER_H + i * ROW_H + 5;
               const h = ROW_H - 10;
-              const fill = r.tone ? toneHex(r.tone) : groupColor(r.group);
+              const fill = r.tone ? toneHex(r.tone, color) : groupColor(r.group);
               return (
                 <g
                   key={r.id}
@@ -381,6 +383,7 @@ export function CurveMilestones({
   target: number;
   className?: string;
 }) {
+  const { color } = useTheme();
   const points = useMemo(() => curve.map((p) => ({ date: toDate(p.date), value: p.value })).sort((a, b) => a.date.getTime() - b.date.getTime()), [curve]);
 
   const crossing = useCallback(
@@ -472,6 +475,7 @@ export function CapacityMeterGrid({
   onCellClick?: (resourceId: string, periodId: string, cell: CapacityCell) => void;
   className?: string;
 }) {
+  const { color } = useTheme();
   const cellTone = (pct: number): Tone => (pct > 100 ? "error" : pct > 90 ? "warn" : "ok");
 
   const rowTotal = (resourceId: string): CapacityCell =>
@@ -602,6 +606,7 @@ export function TargetSolveRail({
   unit?: string;
   className?: string;
 }) {
+  const { color } = useTheme();
   const startDate = toDate(start);
   const targetDate = target ? toDate(target) : null;
   const need = remaining !== undefined ? remaining : total;

@@ -98,22 +98,26 @@ export function toneClass(tone: Tone, surface: ToneSurface): string {
   return SURFACES[surface][tone];
 }
 
-const HEX: Record<Tone, string> = {
-  neutral: color.muted,
-  brand: color.primary,
-  ok: color.ok,
-  warn: color.warn,
-  error: color.error,
-  info: color.info,
-};
+type Palette = { muted: string; primary: string; ok: string; warn: string; error: string; info: string };
 
 /**
  * The raw token value for a tone, for the places a class cannot reach — an
  * SVG `fill`, a chart marker, a map dot.
  *
+ * Pass `useTheme().color` from inside a component so a themed app gets its
+ * own primary. Without it, navy.
+ *
  * Use it only inside `packages/ui`. An app that needs a colour is asking for a
  * part that does not exist yet.
  */
-export function toneHex(tone: Tone): string {
+export function toneHex(tone: Tone, c: Palette = color): string {
+  const HEX: Record<Tone, string> = {
+    neutral: c.muted,
+    brand: c.primary,
+    ok: c.ok,
+    warn: c.warn,
+    error: c.error,
+    info: c.info,
+  };
   return HEX[tone];
 }

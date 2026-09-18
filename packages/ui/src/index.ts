@@ -14,6 +14,8 @@
 export * from "./tokens";
 export { default as tokens } from "./tokens";
 export { default as tailwindPreset } from "./tailwind-preset";
+export * from "./themes";
+export * from "./theme";
 export * from "./tone";
 
 /* Parts, by family ------------------------------------------------------- */

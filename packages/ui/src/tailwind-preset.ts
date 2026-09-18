@@ -10,21 +10,23 @@ const preset: Omit<Config, "content"> = {
   theme: {
     extend: {
       colors: {
-        primary: color.primary,
-        secondary: color.secondary,
+        // Brand-dependent chips come from CSS variables so a ThemeProvider can
+        // repaint everything inside it. Neutrals and status colours are fixed.
+        primary: "rgb(var(--cx-primary-rgb) / <alpha-value>)",
+        secondary: "rgb(var(--cx-secondary-rgb) / <alpha-value>)",
         "ghost-white": color.ghostWhite,
         "surface-grey": color.surfaceGrey,
-        selected: color.selected,
+        selected: "rgb(var(--cx-selected-rgb) / <alpha-value>)",
         "border-idle": color.borderIdle,
-        "border-focus": color.borderFocus,
+        "border-focus": "rgb(var(--cx-border-focus-rgb) / <alpha-value>)",
         edge: color.edge,
         muted: color.muted,
         error: color.error,
         warn: color.warn,
         ok: color.ok,
-        info: color.info,
-        "rank-1": rank[1],
-        "rank-2": rank[2],
+        info: "rgb(var(--cx-info-rgb) / <alpha-value>)",
+        "rank-1": "rgb(var(--cx-rank-1-rgb) / <alpha-value>)",
+        "rank-2": "rgb(var(--cx-rank-2-rgb) / <alpha-value>)",
         "rank-3": rank[3],
         "rank-4": rank[4],
         "series-1": series[0],
