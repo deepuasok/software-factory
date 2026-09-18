@@ -26,8 +26,10 @@ const ROWS: GanttRow[] = [
 ];
 
 const CURVE = Array.from({ length: 13 }, (_, i) => {
-  const value = Math.round(320 / (1 + Math.exp(-0.55 * (i - 6))));
-  return { date: `2026-${String(6 + Math.min(i, 11)).padStart(2, "0")}-01`, value };
+  // June 2026 to June 2027, an S-curve that reaches the target on the last point.
+  const d = new Date(2026, 5 + i, 1);
+  const value = i === 12 ? 320 : Math.round(320 / (1 + Math.exp(-0.7 * (i - 6))));
+  return { date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`, value };
 });
 
 const PERIODS = [

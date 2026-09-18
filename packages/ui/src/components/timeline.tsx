@@ -426,7 +426,7 @@ export function CurveMilestones({
   const pos = (d: Date) => `${(((d.getTime() - rangeStart) / span) * 100).toFixed(2)}%`;
 
   return (
-    <div className={cx("relative pt-6 pb-1", className)}>
+    <div className={cx("relative h-16 pt-6 pb-1", className)}>
       <div className="absolute left-0 right-0 top-[27px] h-1.5 rounded-full bg-surface-grey">
         <div className="h-full rounded-full bg-primary/70" style={{ width: "100%" }} />
       </div>

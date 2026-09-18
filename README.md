@@ -15,6 +15,45 @@ rough prototype, even when someone else's agent built it.
 
 ![the parts bin](docs/gallery.png)
 
+## What it looks like
+
+Two more apps were built the same way, on domains that have nothing to do
+with each other, to prove the parts carry the look on their own.
+
+**Facilities work-order triage** — Monitor, Review, Approve, Track. A model
+ranks urgency; a person overrules it with a reason; high-cost jobs route to
+an approver; accepted jobs land on a board.
+
+| | |
+|---|---|
+| ![dashboard](docs/screenshots/work-orders-dashboard.png) | ![triage queue](docs/screenshots/work-orders-triage.png) |
+| Dashboard: the banner names an owner; every tile carries a delta and an as-of stamp | Triage: the score explained as bars, and an override that will not save without a reason |
+| ![approvals](docs/screenshots/work-orders-approvals.png) | ![board](docs/screenshots/work-orders-board.png) |
+| Approvals: a status stepper, and Reject demands a comment | Board: cards move by drag or by arrow key, and every move is logged |
+
+**Supplier invoice reconciliation** — Reconcile, Import, Report. A file drops
+in, bad rows are listed and left out, each line shows three systems side by
+side with its source, and a month-end readout bridges ERP to what gets paid.
+
+| | |
+|---|---|
+| ![import](docs/screenshots/invoices-import.png) | ![reconcile](docs/screenshots/invoices-reconcile.png) |
+| Import wizard: fuzzy column matching, rejects listed with reasons | Reconcile: pick the trusted source or override with a reason; every choice hits the trail |
+| ![list](docs/screenshots/invoices-list.png) | ![readout](docs/screenshots/invoices-readout.png) |
+| List: filters, saved views, heat cells, bulk actions | Readout: a waterfall from ERP total to agreed pay, with a takeaway under every chart |
+
+**The gallery** — every part, organised by the shape of work it serves, with
+the rule for when to use it and the checklist that defines done.
+
+| | |
+|---|---|
+| ![monitor](docs/screenshots/gallery-monitor.png) | ![review](docs/screenshots/gallery-review.png) |
+| Monitor & alert: toned, value-sized map dots | Review & disposition: a live queue with keyboard navigation and a drawer |
+| ![scenario](docs/screenshots/gallery-scenario.png) | ![schedule](docs/screenshots/gallery-schedule.png) |
+| Scenario workbench: the right chart for the job, the wrong one named and crossed out | Plan & schedule: Gantt with a committed-date line, capacity grid with an overloaded cell |
+| ![tokens](docs/screenshots/gallery-tokens.png) | ![recipes](docs/screenshots/gallery-recipes.png) |
+| Tokens & tone: the paint chips, the validated series order, the ramps | Recipes: fourteen finished pages rendering live with their own sample data |
+
 ## What is in the box
 
 ```
