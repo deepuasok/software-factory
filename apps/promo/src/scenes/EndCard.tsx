@@ -12,6 +12,9 @@ export const EndCard = () => {
       <div style={{ color: "rgba(255,255,255,.72)", fontSize: 26, marginTop: 26, ...enter(f, 14) }}>
         github.com/deepuasok/software-factory
       </div>
+      <div style={{ position: "absolute", bottom: 36, color: "rgba(255,255,255,.45)", fontSize: 15, ...enter(f, 30) }}>
+        Music: "Carefree" by Kevin MacLeod (incompetech.com), CC BY 4.0
+      </div>
       <div style={{ display: "flex", gap: 10, marginTop: 44 }}>
         {series.map((c, i) => (
           <div key={c} style={{ width: 16, height: 16, borderRadius: 4, background: c, transform: `scale(${rise(f, 24 + i * 3)})` }} />

@@ -1,4 +1,4 @@
-import { AbsoluteFill, Sequence } from "remotion";
+import { AbsoluteFill, Audio, Sequence, staticFile } from "remotion";
 import { Title } from "./scenes/Title";
 import { PartsBin } from "./scenes/PartsBin";
 import { Assemble } from "./scenes/Assemble";
@@ -22,6 +22,8 @@ export const TOTAL_FRAMES = T.end[1];
 
 export const Film = () => (
   <AbsoluteFill style={{ background: "#F9F9F9", fontFamily: "Roboto, system-ui, sans-serif" }}>
+    {/* "Carefree" by Kevin MacLeod, CC BY 4.0 — see public/CREDITS.md. Trimmed and faded in ffmpeg. */}
+    <Audio src={staticFile("music.mp3")} />
     <Sequence from={T.title[0]} durationInFrames={T.title[1] - T.title[0]}><Title /></Sequence>
     <Sequence from={T.bin[0]} durationInFrames={T.bin[1] - T.bin[0]}><PartsBin /></Sequence>
     <Sequence from={T.assemble[0]} durationInFrames={T.assemble[1] - T.assemble[0]}><Assemble /></Sequence>
