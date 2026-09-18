@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   AppShell, ApprovalInboxPage, Badge, BarMeter, BoardPage, BuilderPage, Button, Callout,
-  CategoryBars, Card, Checkbox, Chip, ComparePage, ConfirmButton, DashboardPage, DataTable,
+  CategoryBars, Card, Checkbox, Chip, ComparePage, ConfirmButton, DashboardPage, DataTable, Radio,
   DateInput, DetailPage, Divider, EmptyState, Field, FormPage, Grid, ImportWizardPage,
   InlineEdit, JumpList, Label, Legend, ListPage, ListRow, MapExplorerPage, MilestoneRail,
   Modal, NumberInput, PageHeader, ProgressBar, RankBadge, ReconcilePage, ReportPage,
@@ -195,6 +195,7 @@ export default function Gallery() {
   const [view, setView] = useState("foundations");
   const [on, setOn] = useState(true);
   const [checked, setChecked] = useState(false);
+  const [source, setSource] = useState<"erp" | "pdf" | "grn">("erp");
   const [chips, setChips] = useState<string[]>(["tier1"]);
   const [open, setOpen] = useState(false);
   const [psm, setPsm] = useState(0.62);
@@ -406,6 +407,12 @@ export default function Gallery() {
             <Spec name="Toggle vs Checkbox" when="Toggle takes effect immediately. Checkbox applies on Save. That is the only rule that decides between them.">
               <Toggle checked={on} onChange={setOn} label="Live filter" />
               <Checkbox checked={checked} onChange={setChecked} label="Applies on save" />
+            </Spec>
+
+            <Spec name="Radio" when="One choice out of a set whose options sit apart on the screen — a trusted-source marker under each of three columns. When the options can sit together, Segmented or RadioCards reads better.">
+              <Radio name="gallery-source" label="ERP" checked={source === "erp"} onChange={() => setSource("erp")} />
+              <Radio name="gallery-source" label="Supplier PDF" checked={source === "pdf"} onChange={() => setSource("pdf")} />
+              <Radio name="gallery-source" label="Goods receipt" checked={source === "grn"} onChange={() => setSource("grn")} />
             </Spec>
 
             <Spec name="Badges" when="A read-only fact: status, category, count. Never clickable, never a button in disguise.">

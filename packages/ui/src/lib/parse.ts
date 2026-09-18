@@ -19,6 +19,12 @@ export type ColumnType = "string" | "number" | "date" | "boolean";
 
 export type ColumnSpec = {
   key: string;
+  /**
+   * What to call this field on screen — "Purchase order", not "poNumber".
+   * The wizard and the findings fall back to `key` without it, which puts a
+   * code name in front of a person. Always set it.
+   */
+  label?: string;
   /** Header spellings to try, in priority order, against every source header. */
   aliases: string[];
   type: ColumnType;
@@ -97,7 +103,16 @@ function coerce(raw: unknown, type: ColumnType): { value: unknown; error?: strin
   }
 }
 
-/** Apply a spec + mapping to raw source rows, coercing types and collecting rejects. */
+/**
+ * Apply a spec + mapping to raw source rows, coercing types and collecting
+ * rejects.
+ *
+ * A row that produces any reject is **not** returned in `rows`. The wizard
+ * tells the person "N of M rows accepted" and then imports `rows`, so a row
+ * that failed validation must not be one of them — a blank supplier or a
+ * price of "N/A" landing in the table as a real record is the exact bug the
+ * validation step exists to prevent.
+ */
 export function applySpec(
   sourceRows: Record<string, unknown>[],
   spec: TableSpec,
@@ -109,24 +124,28 @@ export function applySpec(
   sourceRows.forEach((sourceRow, i) => {
     const out: Record<string, unknown> = {};
     let hasAnyValue = false;
+    let rowRejected = false;
     for (const column of spec.columns) {
       const sourceHeader = mapping[column.key];
       const raw = sourceHeader !== undefined ? sourceRow[sourceHeader] : undefined;
       const { value, error } = coerce(raw, column.type);
+      const fieldName = column.label ?? column.key;
       if (error) {
-        rejects.push({ row: i, field: column.key, reason: error });
+        rejects.push({ row: i, field: fieldName, reason: error });
+        rowRejected = true;
         continue;
       }
       if (value === undefined) {
         if (column.required) {
-          rejects.push({ row: i, field: column.key, reason: "Required field is empty" });
+          rejects.push({ row: i, field: fieldName, reason: "Required field is empty" });
+          rowRejected = true;
         }
         continue;
       }
       out[column.key] = value;
       hasAnyValue = true;
     }
-    if (hasAnyValue) rows.push(out);
+    if (hasAnyValue && !rowRejected) rows.push(out);
   });
 
   return { rows, rejects };

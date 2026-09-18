@@ -56,8 +56,7 @@ from here and never construct a client anywhere else.
 
 Route handlers live at `app/api/<collection>/route.ts` and export the verbs
 they answer. The template ships none, because a route with no domain model
-behind it is a guess; `apps/session-desk/app/api/*/route.ts` is the worked
-example.
+behind it is a guess. The shape below is the worked example.
 
 The shape, so that `lib/api.ts` on the other side never has to special-case
 anything:
@@ -157,3 +156,14 @@ Not data, but it belongs in the same breath: every number on screen goes
 through `money`, `pct`, `compact`, `relativeTime` or `delta`, so a total in a
 tile and the same total in a table never disagree about rounding. Never call
 `toLocaleString` in a component.
+
+---
+
+## A trap that will recur: the singleton store
+
+A proof app can hold its state on the client instead of in Prisma. If you do
+that with `useSyncExternalStore`, `getSnapshot` must return a **new object**
+after every mutation. A store that mutates a module-level singleton and
+returns the same reference never re-renders — `Object.is` sees no change, the
+data really does update, and the screen silently does not. Rebuild the
+snapshot object on every write.

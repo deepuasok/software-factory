@@ -613,11 +613,16 @@ export function PriorityBadge({ priority }: { priority: 1 | 2 | 3 | 4 }) {
 /* KanbanBoard ------------------------------------------------------------------ */
 
 /**
- * Columns of cards a person drags between, using plain HTML5 drag and drop.
+ * Columns of cards a person moves between, by dragging or with the arrow
+ * keys.
  *
  * Use it for work that is genuinely tracked by which bucket it sits in —
  * intake, in progress, done. For a list that is only ever sorted or filtered,
  * `DataTable` is the right part.
+ *
+ * Every card is focusable, and left/right arrow moves the focused card one
+ * column. Drag and drop alone leaves the board unusable by keyboard, and
+ * unreachable by any test that drives the page.
  */
 export function KanbanBoard<T>({
   columns,
@@ -634,9 +639,18 @@ export function KanbanBoard<T>({
 }) {
   const [dragOver, setDragOver] = useState<string | null>(null);
 
+  function moveByKey(e: React.KeyboardEvent, id: string, columnIndex: number) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    const next = columnIndex + (e.key === "ArrowRight" ? 1 : -1);
+    const target = columns[next];
+    if (!target) return;
+    e.preventDefault();
+    onMove(id, target.key);
+  }
+
   return (
     <div className={cx("flex gap-3 overflow-x-auto pb-1", className)}>
-      {columns.map((col) => (
+      {columns.map((col, columnIndex) => (
         <div
           key={col.key}
           onDragOver={(e) => {
@@ -667,8 +681,11 @@ export function KanbanBoard<T>({
               <div
                 key={cardId(card)}
                 draggable
+                tabIndex={0}
+                title={`In ${col.label}. Drag it, or press the left and right arrow keys to move it.`}
                 onDragStart={(e) => e.dataTransfer.setData("text/plain", cardId(card))}
-                className="bg-white rounded-lg border border-edge p-2.5 cursor-grab active:cursor-grabbing shadow-card"
+                onKeyDown={(e) => moveByKey(e, cardId(card), columnIndex)}
+                className="bg-white rounded-lg border border-edge p-2.5 cursor-grab active:cursor-grabbing shadow-card outline-none focus:ring-2 focus:ring-primary"
               >
                 {renderCard(card)}
               </div>

@@ -35,6 +35,7 @@ archetype it mainly serves; plenty of them get used elsewhere too.
 | `ConfirmButton` | Any delete or discard. Two clicks, second one says what happens. |
 | `Toggle` | A setting that takes effect **immediately**. |
 | `Checkbox` | A setting that applies **on Save**. That is the only difference. |
+| `Radio` | One choice out of a set whose options cannot sit next to each other — a "trusted" marker under each of three columns. When they can sit together, use `Segmented` or `RadioCards`. |
 | `Segmented` | Two to four exclusive choices that switch a view. |
 | `Chip` | Filters that can be on at the same time. Takes a `tone`. |
 | `Tabs` | Views of the same record. Never for navigating elsewhere. |
@@ -60,7 +61,7 @@ archetype it mainly serves; plenty of them get used elsewhere too.
 
 | Part | Use it when |
 |---|---|
-| `StatTile` | One number that matters. Four across is the ceiling. Takes an optional `delta` and `sparkline`. |
+| `StatTile` | One number that matters. Four across is the ceiling. Takes an optional `delta`, `sparkline` and `asOf` — a Monitor & alert dashboard wants `asOf` on every tile. |
 | `StatRow` | The row that holds them. `wideFirst` gives the headline figure a double column. |
 | `Badge` | A read-only fact: status, category, count. Never clickable. |
 | `RankBadge` | A ranked band — tier, risk, priority. 1 is always darkest and best. |
@@ -79,6 +80,7 @@ archetype it mainly serves; plenty of them get used elsewhere too.
 | Part | Use it when |
 |---|---|
 | `DataTable` | Any table. Everything past the plain table is opt-in — turn nothing on unless people do that job here. |
+| `DataTable emptyState` | Every list needs one. Pass an `EmptyState` with the one action that creates the first row. (`empty` still takes a plain string, and still just centres it.) |
 | `DataTable sortable` | People compare down a column. Set `sortable` and `sortValue` on that column; the header cycles ascending, descending, off. |
 | `DataTable selectable` | People act on several rows at once. Pair it with `bulkActions`. |
 | `DataTable renderExpanded` | A row has detail worth a sentence but not a page. For a whole record, open the record. |
@@ -219,8 +221,8 @@ Two systems, one number, and a record of which one was believed.
 | Part | Use it when |
 |---|---|
 | `SourceBadge` | Next to a number that did not come straight from a form. |
-| `OverrideControl` | A model produces a field and a human sometimes knows better. |
-| `ExplainPanel` | Next to a model-produced figure people are being asked to trust or override. |
+| `OverrideControl` | A model produces a field and a human sometimes knows better. Pass `reasonCodes` for a domain's own reasons. |
+| `ExplainPanel` | Next to a model-produced figure people are being asked to trust or override. Pass `valueFormat` whenever the contributions carry a unit — money, days, hours. |
 | `ActivityFeed` | You need to answer "what happened here" without a diff view. |
 | `recordChange` | Building an `ActivityEntry` in a call site that thinks in `{ from, to }`. It maps them to the stored `fromValue` / `toValue`. |
 | `AsOf` | Beside a figure that was computed rather than typed in just now. |
@@ -252,13 +254,13 @@ Open work, who has it, and when it was due.
 
 | Part | Use it when |
 |---|---|
-| `KanbanBoard` | Work genuinely tracked by which bucket it sits in. Plain HTML5 drag and drop between columns. For a list only ever sorted or filtered, use `DataTable`. |
+| `KanbanBoard` | Work genuinely tracked by which bucket it sits in. Drag a card between columns, or focus a card and press the left or right arrow key. For a list only ever sorted or filtered, use `DataTable`. |
 | `Checklist` | A fixed set of steps a person ticks off on one record. For a to-do list people add to freely, this is the wrong part. |
 | `DueDateBadge` | A due date anywhere in a row or a header. "due in 3d" or "2d overdue", toned by how close it is — overdue is `error`, within two days is `warn`, otherwise `neutral`. Never colour a raw date by hand elsewhere. |
 | `PriorityBadge` | A work item's priority, P1 through P4. P1 is always the darkest and the most urgent. Group anything past P4 as P4. |
 | `AssigneePicker` | A record needs an owner or a reviewer. |
 | `Avatar` | Anywhere a name needs a face and there is no photo. |
-| `CommentThread` | A record needs a discussion, one thread per record. |
+| `CommentThread` | A record needs a discussion, one thread per record. Leave `onAdd` out for a read-only trail; leave `onResolve` out and nothing can be resolved here. |
 | `ProvenanceUser` / `ProvenanceComment` | The person and comment types. |
 
 ---

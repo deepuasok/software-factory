@@ -198,6 +198,53 @@ export function Checkbox({
   );
 }
 
+/* Radio ---------------------------------------------------------------- */
+
+/**
+ * One choice out of a set, where the choices sit in different places on the
+ * screen — a "trusted source" marker under each of three columns, say.
+ *
+ * Use it only when the options cannot stand next to each other. When they
+ * can, `Segmented` (few, exclusive) or `RadioCards` (a choice that needs a
+ * hint under each option) reads better and is easier to hit.
+ */
+export function Radio({
+  checked,
+  onChange,
+  label,
+  name,
+  disabled,
+  className,
+}: {
+  checked: boolean;
+  onChange: (next: boolean) => void;
+  label?: React.ReactNode;
+  /** Groups the choices, exactly as the HTML attribute does. */
+  name: string;
+  disabled?: boolean;
+  className?: string;
+}) {
+  return (
+    <label
+      className={cx(
+        "inline-flex items-center gap-1.5 text-[11px]",
+        disabled ? "opacity-40" : "cursor-pointer",
+        className,
+      )}
+    >
+      <input
+        type="radio"
+        name={name}
+        checked={checked}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.checked)}
+        className="w-3.5 h-3.5 border border-border-idle accent-primary cursor-pointer"
+      />
+      {label && <span className="text-muted">{label}</span>}
+    </label>
+  );
+}
+
 /**
  * Two to four exclusive choices that switch a view. More than four, or choices
  * that are not exclusive, belong in Chips or a Select.

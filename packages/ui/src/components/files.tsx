@@ -369,7 +369,7 @@ export function ImportWizard({
 
   const requiredUnmapped = spec.columns.filter((c) => c.required && !mapping[c.key]);
   const findings: Finding[] = [
-    ...requiredUnmapped.map((c): Finding => ({ severity: "error", message: `"${c.key}" has no source column mapped.` })),
+    ...requiredUnmapped.map((c): Finding => ({ severity: "error", message: `"${c.label ?? c.key}" has no source column mapped.` })),
     ...rejects.map((r): Finding => ({ severity: "error", message: `${r.field}: ${r.reason}`, rowIndex: r.row })),
   ];
 
@@ -424,7 +424,7 @@ export function ImportWizard({
             {spec.columns.map((c) => (
               <div key={c.key} className="flex items-center gap-3 px-3 py-2 bg-white">
                 <span className="text-[12px] font-medium text-secondary w-40 shrink-0">
-                  {c.key}
+                  {c.label ?? c.key}
                   {c.required && <span className="text-error"> *</span>}
                 </span>
                 <Select

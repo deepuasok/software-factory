@@ -19,7 +19,7 @@ three extra lines your archetype adds, in
 - [ ] The app runs with the database empty and does not throw.
 
 **Charts**
-- [ ] Charts come from `TrendChart` / `CategoryBars` / `Sparkline` only.
+- [ ] Every chart is a wrapper from `components/charts.tsx` — `TrendChart`, `CategoryBars`, `Sparkline`, `StackedBars`, `Waterfall`, `RankedBars`, `DivergingBars` and the rest. Recharts is never imported in an app.
 - [ ] One y-axis. No dual-axis chart anywhere.
 - [ ] Two or more series carry a legend.
 - [ ] Series colours are the token order, untouched.

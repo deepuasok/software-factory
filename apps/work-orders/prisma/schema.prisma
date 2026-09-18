@@ -1,0 +1,132 @@
+// The seven cross-cutting models every app in the shop gets for free.
+//
+// They are polymorphic on (entityType, entityId): entityType is the domain
+// model's name, entityId is its id. That is why a comment, an override or an
+// attachment never needs a new table when a new domain model arrives.
+//
+// Domain models go below the marker at the bottom. They carry id, createdAt,
+// updatedAt and createdBy, per docs/CONTRACTS.md section 6.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// Something a person said about a record. Threaded one level, never two.
+model Comment {
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  entityType String
+  entityId   String
+  body       String
+  authorId   String
+  authorName String
+  parentId   String?
+  resolvedAt DateTime?
+  meta       Json?
+
+  @@index([entityType, entityId])
+}
+
+/// Append-only. Written only through lib/audit.ts, never from a route.
+model Activity {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  entityType String
+  entityId   String
+  verb       String
+  actorId    String
+  field      String?
+  fromValue  Json?
+  toValue    Json?
+  meta       Json?
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+/// A figure a person replaced by hand. The reason is not optional.
+model Override {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  entityType    String
+  entityId      String
+  field         String
+  originalValue Json?
+  newValue      Json
+  reasonText    String
+  actorId       String
+  expiresAt     DateTime?
+
+  @@index([entityType, entityId])
+}
+
+/// A file someone attached. The bytes live in object storage, not in here.
+model Attachment {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  entityType  String
+  entityId    String
+  fileName    String
+  contentType String
+  sizeBytes   Int
+  storageKey  String
+  uploadedBy  String
+
+  @@index([entityType, entityId])
+}
+
+/// Every status a record has held, and who moved it.
+model StatusHistory {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  entityType String
+  entityId   String
+  fromStatus String?
+  toStatus   String
+  actorId    String
+  note       String?
+
+  @@index([entityType, entityId])
+}
+
+/// A named filter and sort people come back to. entityId is "" for a whole list.
+model SavedView {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  entityType String
+  entityId   String   @default("")
+  name       String
+  filters    Json
+  sort       Json?
+  ownerId    String
+  shared     Boolean  @default(false)
+
+  @@index([entityType, entityId])
+}
+
+/// Where a figure came from, so a number on screen can always be traced.
+model SourceAttribution {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  entityType   String
+  entityId     String
+  field        String
+  sourceSystem String
+  sourceRef    String?
+  confidence   Float?
+  observedAt   DateTime
+
+  @@index([entityType, entityId])
+}
+
+// ---------------------------------------------------------------------------
+// Domain models for this app go below. Give each one id, createdAt, updatedAt
+// and createdBy, and nothing cross-cutting — that is what the seven above are.
+// ---------------------------------------------------------------------------

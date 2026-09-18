@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react";
 import { Button, cx } from "./primitives";
 import { Sparkline } from "./charts";
+import { AsOf } from "./provenance";
 import { toneClass } from "../tone";
 import { sequential, type Tone } from "../tokens";
 
@@ -22,6 +23,7 @@ export function StatTile({
   tone = "default",
   delta,
   sparkline,
+  asOf,
   className,
 }: {
   label: string;
@@ -33,6 +35,12 @@ export function StatTile({
   delta?: { value: number; format?: (v: number) => string; higherIsBetter?: boolean };
   /** A trend, drawn small in the corner with the existing Sparkline. */
   sparkline?: number[];
+  /**
+   * When the figure was pulled, as an ISO timestamp. Renders the shared
+   * `AsOf` stamp inside the tile — a figure with no date is a rumour, and the
+   * Monitor & alert archetype asks for one on every tile.
+   */
+  asOf?: string;
   className?: string;
 }) {
   return (
@@ -55,6 +63,11 @@ export function StatTile({
         </div>
       )}
       {note && <div className="text-[11px] text-muted mt-1">{note}</div>}
+      {asOf && (
+        <div className="mt-1">
+          <AsOf at={asOf} />
+        </div>
+      )}
     </div>
   );
 }
@@ -76,8 +89,13 @@ export function StatRow({
   className?: string;
 }) {
   const items = React.Children.toArray(children);
+  // With a wide first tile the row needs one extra column, or the fourth
+  // tile wraps underneath on its own — which reads as a fifth, orphaned stat.
+  const cols = wideFirst
+    ? "grid-cols-2 lg:grid-cols-5"
+    : "grid-cols-2 lg:grid-cols-4";
   return (
-    <div className={cx("grid grid-cols-2 lg:grid-cols-4 gap-3", className)}>
+    <div className={cx("grid gap-3", cols, className)}>
       {items.map((child, i) => (
         <div key={i} className={wideFirst && i === 0 ? "col-span-2" : undefined}>
           {child}
@@ -369,6 +387,7 @@ export function DataTable<T>({
   onRowClick,
   isSelected,
   empty = "Nothing here yet.",
+  emptyState,
   className,
   sort,
   onSortChange,
@@ -389,7 +408,14 @@ export function DataTable<T>({
   rowKey: (row: T, index: number) => string;
   onRowClick?: (row: T, index: number) => void;
   isSelected?: (row: T) => boolean;
+  /** Kept so older callers keep compiling. `emptyState` is the name to use. */
   empty?: React.ReactNode;
+  /**
+   * What shows when there is nothing — the contract name for this prop (see
+   * docs/CONTRACTS.md §2). Pass an `EmptyState` with the one action that
+   * creates the first row; every list is supposed to have one.
+   */
+  emptyState?: React.ReactNode;
   className?: string;
   /** Controlled sort. Leave it out and the table keeps its own. */
   sort?: SortState;
@@ -618,6 +644,7 @@ export function DataTable<T>({
   );
 
   if (rows.length === 0) {
+    if (emptyState) return <>{emptyState}</>;
     return <div className="px-4 py-8 text-center text-[12px] text-muted">{empty}</div>;
   }
 

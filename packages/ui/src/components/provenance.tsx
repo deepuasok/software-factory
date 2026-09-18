@@ -195,8 +195,10 @@ function relativeTime(iso: string, now: Date = new Date()): string {
 }
 
 /**
- * A discussion on a record: author, relative time, the body, reply and
- * resolve. A composer sits at the bottom for the current user.
+ * A discussion on a record: author, relative time, the body, and resolve. A
+ * composer sits at the bottom for the current user when `onAdd` is given;
+ * leave `onAdd` out and the thread is read-only, which is what an approval
+ * inbox wants when the comments come from the decision itself.
  *
  * Use it on a record's detail page, one thread per record. Do not use it for
  * a single system-generated note — that is ActivityFeed instead.
@@ -206,19 +208,25 @@ export function CommentThread({
   onAdd,
   onResolve,
   currentUser,
+  emptyState,
   className,
 }: {
   comments: ProvenanceComment[];
-  onAdd: (body: string) => void;
-  onResolve: (id: string, resolved: boolean) => void;
-  currentUser: string;
+  /** Leave it out for a read-only trail — the composer disappears with it. */
+  onAdd?: (body: string) => void;
+  /** Leave it out and comments cannot be resolved here. */
+  onResolve?: (id: string, resolved: boolean) => void;
+  /** Whoever is writing. Only used by the composer. */
+  currentUser?: string;
+  /** What shows when nobody has said anything yet. */
+  emptyState?: React.ReactNode;
   className?: string;
 }) {
   const [draft, setDraft] = useState("");
 
   function submit() {
     const body = draft.trim();
-    if (!body) return;
+    if (!body || !onAdd) return;
     onAdd(body);
     setDraft("");
   }
@@ -226,7 +234,9 @@ export function CommentThread({
   return (
     <div className={cx("flex flex-col gap-3", className)}>
       {comments.length === 0 && (
-        <p className="text-[12px] text-muted">No comments yet. Be the first to leave one.</p>
+        <p className="text-[12px] text-muted">
+          {emptyState ?? (onAdd ? "No comments yet. Be the first to leave one." : "No comments on this record.")}
+        </p>
       )}
       {comments.map((c) => (
         <div key={c.id} className={cx("flex items-start gap-2.5", c.resolved && "opacity-60")}>
@@ -242,37 +252,38 @@ export function CommentThread({
               )}
             </div>
             <p className="text-[12.5px] text-secondary mt-0.5 leading-relaxed">{c.body}</p>
-            <div className="flex items-center gap-3 mt-1">
-              <button type="button" className="text-[11px] font-semibold text-muted hover:text-primary">
-                Reply
-              </button>
-              <button
-                type="button"
-                onClick={() => onResolve(c.id, !c.resolved)}
-                className="text-[11px] font-semibold text-muted hover:text-primary"
-              >
-                {c.resolved ? "Reopen" : "Resolve"}
-              </button>
-            </div>
+            {onResolve && (
+              <div className="flex items-center gap-3 mt-1">
+                <button
+                  type="button"
+                  onClick={() => onResolve(c.id, !c.resolved)}
+                  className="text-[11px] font-semibold text-muted hover:text-primary"
+                >
+                  {c.resolved ? "Reopen" : "Resolve"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       ))}
-      <div className="flex items-start gap-2.5 pt-2 border-t border-edge">
-        <Avatar name={currentUser} size="sm" />
-        <div className="flex-1 flex flex-col gap-1.5">
-          <TextArea
-            rows={2}
-            placeholder="Leave a comment…"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-          />
-          <div className="flex justify-end">
-            <Button variant="secondary" size="sm" onClick={submit} disabled={!draft.trim()}>
-              Comment
-            </Button>
+      {onAdd && (
+        <div className="flex items-start gap-2.5 pt-2 border-t border-edge">
+          <Avatar name={currentUser ?? "You"} size="sm" />
+          <div className="flex-1 flex flex-col gap-1.5">
+            <TextArea
+              rows={2}
+              placeholder="Leave a comment…"
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+            />
+            <div className="flex justify-end">
+              <Button variant="secondary" size="sm" onClick={submit} disabled={!draft.trim()}>
+                Comment
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -292,17 +303,26 @@ export type ActivityEntry = {
  * Turn a `{ from, to }` change into an `ActivityEntry`. Keeps the append-only
  * shape (`fromValue` / `toValue`) that `ActivityFeed` renders, so callers can
  * keep writing `{ from, to }` at the call site — see docs/CONTRACTS.md §6.
+ *
+ * This is the client-side half of the audit trail: an app with no live
+ * database calls it directly and appends the entry to its own state. An app
+ * with a database calls `recordChange()` in `lib/audit.ts` on the server
+ * instead, and this part only renders what comes back.
+ *
+ * `from` and `to` take a number as readily as a string — a score going 62 →
+ * 74 should not need a `String()` at every call site — and `at` defaults to
+ * now.
  */
 export function recordChange(entry: {
   verb: string;
   actor: string;
   field: string;
-  from: string;
-  to: string;
-  at: string;
+  from: string | number;
+  to: string | number;
+  at?: string;
 }): ActivityEntry {
-  const { from, to, ...rest } = entry;
-  return { ...rest, fromValue: from, toValue: to };
+  const { from, to, at, ...rest } = entry;
+  return { ...rest, fromValue: String(from), toValue: String(to), at: at ?? new Date().toISOString() };
 }
 
 function dayLabel(iso: string, now: Date = new Date()): string {
@@ -376,14 +396,21 @@ export function ActivityFeed({
 
 /* OverrideControl -------------------------------------------------------- */
 
-export type OverrideReasonCode = "data-error" | "local-knowledge" | "manual-adjustment" | "other";
+export type OverrideReasonCode = string;
 
-const REASON_LABEL: Record<OverrideReasonCode, string> = {
-  "data-error": "The model input was wrong",
-  "local-knowledge": "I know something the model does not",
-  "manual-adjustment": "A manual adjustment we agreed on",
-  other: "Other",
-};
+export type OverrideReason = { value: OverrideReasonCode; label: string };
+
+/**
+ * The reasons every shop shares. Pass `reasonCodes` to add a domain's own
+ * (price variance, waiting on a part) — keep "other" at the end so nobody is
+ * forced to lie to get past the control.
+ */
+export const DEFAULT_OVERRIDE_REASONS: OverrideReason[] = [
+  { value: "data-error", label: "The model input was wrong" },
+  { value: "local-knowledge", label: "I know something the model does not" },
+  { value: "manual-adjustment", label: "A manual adjustment we agreed on" },
+  { value: "other", label: "Other" },
+];
 
 /**
  * Lets a person replace a model value with a human one, and forces them to
@@ -398,10 +425,13 @@ export function OverrideControl({
   field,
   modelValue,
   onOverride,
+  reasonCodes = DEFAULT_OVERRIDE_REASONS,
   className,
 }: {
   field: string;
   modelValue: string;
+  /** Domain reason codes. Defaults to the shared four. */
+  reasonCodes?: OverrideReason[];
   onOverride: (override: {
     field: string;
     modelValue: string;
@@ -412,7 +442,7 @@ export function OverrideControl({
   className?: string;
 }) {
   const [humanValue, setHumanValue] = useState("");
-  const [reasonCode, setReasonCode] = useState<OverrideReasonCode>("local-knowledge");
+  const [reasonCode, setReasonCode] = useState<OverrideReasonCode>(reasonCodes[0]?.value ?? "other");
   const [reasonText, setReasonText] = useState("");
 
   const canSave = humanValue.trim() !== "" && reasonText.trim() !== "";
@@ -435,9 +465,9 @@ export function OverrideControl({
       </Field>
       <Field label="Reason">
         <Select small value={reasonCode} onChange={(e) => setReasonCode(e.target.value as OverrideReasonCode)}>
-          {(Object.keys(REASON_LABEL) as OverrideReasonCode[]).map((code) => (
-            <option key={code} value={code}>
-              {REASON_LABEL[code]}
+          {reasonCodes.map((r) => (
+            <option key={r.value} value={r.value}>
+              {r.label}
             </option>
           ))}
         </Select>
@@ -523,11 +553,19 @@ export function ExplainPanel({
   title,
   contributions,
   summary,
+  valueFormat,
   className,
 }: {
   title: string;
   contributions: Contribution[];
   summary: string;
+  /**
+   * How to write each contribution's size. It receives the absolute value; the
+   * sign is drawn separately. Without it the number is printed bare, which is
+   * right for points out of 100 and wrong for money — pass a formatter
+   * whenever the contributions carry a unit.
+   */
+  valueFormat?: (v: number) => string;
   className?: string;
 }) {
   const max = Math.max(1, ...contributions.map((c) => Math.abs(c.value)));
@@ -553,7 +591,7 @@ export function ExplainPanel({
               </div>
               <span className={cx("cx-num text-[11px] font-semibold w-14 text-right", toneClass(tone, "text"))}>
                 {c.direction === "up" ? "+" : "−"}
-                {Math.abs(c.value)}
+                {valueFormat ? valueFormat(Math.abs(c.value)) : Math.abs(c.value)}
               </span>
             </div>
           );
