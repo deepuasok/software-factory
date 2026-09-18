@@ -74,4 +74,5 @@ export {
 /* Map data --------------------------------------------------------------- */
 
 export { GEO, geoLookup, project, jitter, MAP_W, MAP_H } from "./data/geo";
+export { geocode, resolveCountry, normalizePlace, summarizePrecision, type GeoResult, type Precision } from "./geocode";
 export { COUNTRY_CENTROIDS, countryCentroid } from "./data/country-centroids";

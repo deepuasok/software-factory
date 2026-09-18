@@ -39,6 +39,13 @@ const POINTS: MapPoint[] = [
   { id: "6", city: "Sao Paulo", country: "Brazil", label: "Delta Research", valueLabel: "15 sites", tone: "warn", value: 15 },
   { id: "7", city: "Sydney", country: "Australia", label: "Crescent Health", valueLabel: "24 sites", tone: "ok", value: 24 },
   { id: "8", city: "Mumbai", country: "India", label: "Vantage Site", valueLabel: "6 sites", tone: "error", value: 6 },
+  // The messy half of a real export. Every one of these still lands.
+  { id: "9", city: "SÃO PAULO", label: "Upper-case, accented", valueLabel: "11 sites", tone: "ok", value: 11 },
+  { id: "10", city: "Bostn", country: "USA", label: "Misspelt city", valueLabel: "8 sites", tone: "ok", value: 8 },
+  { id: "11", city: "NYC", label: "Abbreviation", valueLabel: "19 sites", tone: "ok", value: 19 },
+  { id: "12", city: "Bavaria", country: "DE", label: "A region, not a city", valueLabel: "5 sites", tone: "warn", value: 5 },
+  { id: "13", city: "Nowheresville", country: "Korea, Republic of", label: "Unknown town, known country", valueLabel: "3 sites", tone: "warn", value: 3 },
+  { id: "14", city: "", country: "", label: "Nothing at all", valueLabel: "2 sites", tone: "error", value: 2 },
 ];
 
 const CHOROPLETH_DATA: ChoroplethPoint[] = [
@@ -75,7 +82,7 @@ export function MapSection() {
   return (
     <div className="flex flex-col gap-4">
       <Spec
-        name="WorldMap v2"
+        name="WorldMap v2 — never drops a row"
         when="Locations, mixed tones and value-sized dots. Ctrl/cmd + scroll to zoom (anchored under the cursor), drag to pan once zoomed, hover a dot for its tooltip. Zoom and pan are clamped so the map never leaves the frame."
       >
         <WorldMap points={POINTS} sizeKey="value" sizeRange={[4, 13]} height={300} graticule />

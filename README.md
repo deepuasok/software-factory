@@ -163,6 +163,11 @@ what "done" means.
 - **Animation is off on chart marks.** Under React 18 they sometimes never
   paint, and a chart that is occasionally blank is worse than a still one.
 
+## Data credits
+
+- Map outlines: [Natural Earth](https://www.naturalearthdata.com/) (public domain).
+- Place names for offline geocoding: [GeoNames](https://www.geonames.org/) (CC BY 4.0), cities of 15,000+ people, regions and countries.
+
 ## Licence
 
 MIT. Take it, re-skin it, ship it.

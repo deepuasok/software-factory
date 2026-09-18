@@ -142,6 +142,7 @@ The ten-second answer to whether anything needs attention today.
 | `TrendChart` | Anything over time. Optional target line and dated markers. `referenceDots` and `referenceAreas` call out a date or a span; `brush` scrubs a long series; `seriesToggle` makes the legend hide and show lines; `highlightKey` dims everything but one. |
 | `CategoryBars` | Magnitude across categories. `horizontal` when labels are names. |
 | `Sparkline` | A trend inside a table cell. No axes, no tooltip. |
+| `geocode()` | Turn whatever a dataset calls a place into a position, offline, with a precision (city, region, country). Used by `WorldMap`; call it yourself for tables and audits. |
 | `WorldMap` | Locations. Give it a city and country, or coordinates. `sizeKey="value"` sizes dots by a number, `tone` per point colours by state, `graticule` adds faint reference lines. Ctrl or cmd plus scroll zooms, drag pans once zoomed, both clamped to the frame. |
 | `Choropleth` | One number per country, ten or fewer. Not a true filled-polygon map — it draws a coloured, sized centroid circle per country, and says so on screen. |
 | `GeoFilterRail` | A rail of region or country chips with counts, for narrowing a map or table by geography. Controlled. |

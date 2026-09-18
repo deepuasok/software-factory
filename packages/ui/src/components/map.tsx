@@ -4,7 +4,8 @@ import { useTheme } from "../theme";
 
 import React, { useMemo, useRef, useState } from "react";
 import { WORLD_LAND_PATH } from "../data/world-land";
-import { MAP_H, MAP_W, geoLookup, jitter, project } from "../data/geo";
+import { MAP_H, MAP_W, jitter, project } from "../data/geo";
+import { geocode, type Precision } from "../geocode";
 import { countryCentroid } from "../data/country-centroids";
 import { Button, Chip, cx } from "./primitives";
 import { color, sequential, type Tone } from "../tokens";
@@ -21,6 +22,8 @@ export type MapPoint = {
   label?: string;
   /** A second line in the tooltip, e.g. "42 sites". Purely descriptive. */
   valueLabel?: string;
+  /** Region or state, used when the city is unknown or missing. */
+  region?: string;
   /** Filled dot when true, hollow when false. The in/out distinction. */
   active?: boolean;
   /**
@@ -56,7 +59,7 @@ const GRATICULE_PATH = (() => {
   return d;
 })();
 
-type Placed = MapPoint & { x: number; y: number; r: number };
+type Placed = MapPoint & { x: number; y: number; r: number; precision: Precision; matched: string };
 
 type Tip = { point: MapPoint; left: number; top: number };
 
@@ -108,22 +111,23 @@ export function WorldMap({
   const placed = useMemo<Placed[]>(() => {
     return points
       .map((p) => {
-        let lat = p.lat;
-        let lon = p.lon;
-        if (lat === undefined || lon === undefined) {
-          const hit = p.city ? geoLookup(p.city, p.country ?? "") : null;
-          if (!hit) return null;
-          [lat, lon] = hit;
-        }
-        const { x, y } = project(lat, lon);
+        // Never drop a row silently: a city we know, else its region, else
+        // the country. Only a row with nothing recognisable stays off the map,
+        // and it is counted in the caption.
+        const g = geocode({ lat: p.lat, lon: p.lon, city: p.city, region: p.region, country: p.country });
+        if (g.precision === "none") return null;
+        const { x, y } = project(g.lat, g.lon);
         const j = jitter(p.id);
         const r = sizeKey
           ? sizeRange[0] + (Math.max(0, p.value ?? 0) / maxValue) * (sizeRange[1] - sizeRange[0])
           : sizeRange[1];
-        return { ...p, x: x + j.dx, y: y + j.dy, r };
+        return { ...p, x: x + j.dx, y: y + j.dy, r, precision: g.precision, matched: g.matched };
       })
       .filter(Boolean) as Placed[];
   }, [points, sizeKey, sizeRange, maxValue]);
+
+  const unplaced = points.length - placed.length;
+  const coarse = placed.filter((p) => p.precision === "region" || p.precision === "country").length;
 
   function zoom(factor: number, clientX?: number, clientY?: number) {
     setView((prev) => {
@@ -212,6 +216,8 @@ export function WorldMap({
               cy={p.y}
               r={p.r / shrink}
               fill={p.active === false ? color.white : p.tone ? toneHex(p.tone, color) : color.primary}
+              fillOpacity={p.precision === "country" ? 0.45 : 1}
+              strokeDasharray={p.precision === "region" || p.precision === "country" ? `${2 / shrink} ${2 / shrink}` : undefined}
               stroke={p.active === false ? color.borderIdle : color.secondary}
               strokeWidth={1.4 / shrink}
             />
@@ -228,6 +234,17 @@ export function WorldMap({
             {tip.point.label ?? `${tip.point.city ?? ""}${tip.point.country ? ", " + tip.point.country : ""}`}
           </strong>
           {tip.point.valueLabel && <span className="cx-num opacity-80">{tip.point.valueLabel}</span>}
+          {(tip.point as Placed).precision !== "city" && (tip.point as Placed).precision !== "exact" && (
+            <span className="block opacity-70">placed at {(tip.point as Placed).precision} level: {(tip.point as Placed).matched}</span>
+          )}
+        </div>
+      )}
+
+      {(coarse > 0 || unplaced > 0) && (
+        <div className="absolute bottom-2 left-2 text-[10px] text-muted bg-white/90 rounded px-1.5 py-0.5">
+          {coarse > 0 && `${coarse} placed at region or country level (dashed)`}
+          {coarse > 0 && unplaced > 0 && " · "}
+          {unplaced > 0 && `${unplaced} could not be placed`}
         </div>
       )}
 
