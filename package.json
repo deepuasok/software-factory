@@ -1,0 +1,13 @@
+{
+  "name": "software-factory",
+  "private": true,
+  "version": "1.0.0",
+  "description": "The shop. Every internal web app is built here, from one parts bin, so they all look like they came from the same place.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "gallery": "npm run dev --workspace @factory/gallery"
+  }
+}

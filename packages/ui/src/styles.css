@@ -1,0 +1,160 @@
+/*
+ * The shop's whole CSS pipeline: the font, Tailwind's layers, the base reset
+ * and the handful of component classes that are easier to express in CSS than
+ * in React props.
+ *
+ * An app's globals.css is one line — an import of this file. That is on
+ * purpose: it leaves an app nowhere to quietly redefine a control.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Roboto', system-ui, sans-serif;
+  font-size: 13px;
+  background: #F9F9F9;
+  color: var(--cx-secondary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root {
+  /* The navy default. A ThemeProvider overrides these for everything inside it. */
+  --cx-primary-rgb: 27 57 117;
+  --cx-secondary-rgb: 7 29 73;
+  --cx-selected-rgb: 234 238 245;
+  --cx-border-focus-rgb: 17 135 201;
+  --cx-info-rgb: 17 135 201;
+  --cx-rank-1-rgb: 27 57 117;
+  --cx-rank-2-rgb: 37 99 235;
+  --cx-primary: #1B3975;
+  --cx-secondary: #071D49;
+  --cx-border-idle: #AEB8C6;
+  --cx-border-focus: #1187C9;
+  --cx-edge: #E5E7EB;
+  --cx-muted: #56657E;
+  --cx-selected: #EAEEF5;
+}
+
+/* Focus is always the same ring, everywhere, on everything. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: none;
+  border-color: var(--cx-border-focus);
+  box-shadow: 0 0 0 3px rgb(var(--cx-border-focus-rgb) / 0.18);
+}
+
+@layer components {
+  /* Fields ---------------------------------------------------------- */
+  .cx-field {
+    @apply w-full block bg-white text-secondary rounded-lg;
+    font-size: 13px;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid var(--cx-border-idle);
+    font-family: inherit;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .cx-field:hover:not(:focus) { border-color: #8A97A9; }
+  .cx-field::placeholder { color: #9AA5B5; }
+  .cx-field[aria-invalid="true"] { border-color: #C93623; }
+
+  .cx-field-sm { height: 30px; padding: 0 8px; font-size: 12px; border-radius: 6px; }
+
+  select.cx-field {
+    cursor: pointer;
+    padding-right: 34px;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2356657E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
+  input[type="date"].cx-field,
+  input[type="number"].cx-field { appearance: auto; -webkit-appearance: none; }
+  input[type="date"].cx-field::-webkit-calendar-picker-indicator { cursor: pointer; opacity: .55; }
+  input[type="date"].cx-field::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+  /* Buttons --------------------------------------------------------- */
+  .cx-btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg font-semibold;
+    height: 32px;
+    padding: 0 12px;
+    font-size: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+  .cx-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .cx-btn-lg { height: 40px; padding: 0 18px; font-size: 13px; }
+  .cx-btn-sm { height: 28px; padding: 0 10px; font-size: 11px; }
+
+  .cx-btn-primary { background: var(--cx-primary); border-color: var(--cx-primary); color: #fff; }
+  .cx-btn-primary:hover:not(:disabled) { background: var(--cx-secondary); border-color: var(--cx-secondary); }
+
+  .cx-btn-secondary { background: #fff; border-color: var(--cx-border-idle); color: var(--cx-muted); }
+  .cx-btn-secondary:hover:not(:disabled) { border-color: var(--cx-primary); color: var(--cx-primary); }
+
+  .cx-btn-ghost { background: transparent; border-color: transparent; color: var(--cx-muted); }
+  .cx-btn-ghost:hover:not(:disabled) { background: var(--cx-selected); color: var(--cx-primary); }
+
+  .cx-btn-danger { background: #fff; border-color: #C93623; color: #C93623; }
+  .cx-btn-danger:hover:not(:disabled) { background: #C93623; color: #fff; }
+
+  /* Chip / filter --------------------------------------------------- */
+  .cx-chip {
+    @apply inline-flex items-center gap-1.5 rounded-full font-medium bg-white;
+    height: 28px;
+    padding: 0 10px;
+    font-size: 11px;
+    border: 1px solid var(--cx-border-idle);
+    color: var(--cx-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 120ms ease;
+  }
+  .cx-chip:hover { border-color: var(--cx-primary); color: var(--cx-primary); }
+  .cx-chip[data-on="true"] { background: var(--cx-primary); border-color: var(--cx-primary); color: #fff; }
+
+  /* Surfaces -------------------------------------------------------- */
+  .cx-card {
+    @apply bg-white rounded-lg;
+    border: 1px solid var(--cx-edge);
+    box-shadow: 0 1px 2px rgba(7, 29, 73, 0.05);
+  }
+
+  .cx-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cx-muted);
+  }
+
+  .cx-num { font-variant-numeric: tabular-nums; }
+}
+
+@tailwind utilities;
+
+/* Print — used by PrintLayout (components/furniture.tsx). Hides the app's
+   own chrome (AppShell's top bar is a <header>) and anything marked
+   .cx-print-hide, so only the report survives to paper. */
+@media print {
+  header,
+  .cx-print-hide {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  .cx-print-layout {
+    max-width: 100% !important;
+    box-shadow: none !important;
+  }
+}
