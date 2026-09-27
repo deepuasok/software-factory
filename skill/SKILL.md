@@ -112,6 +112,29 @@ the app does), screenshot it. Then walk `docs/CHECKLIST.md` plus your
 archetype's addendum line by line. An app that has not been opened in a
 browser is not finished.
 
+Drive every path, not the convenient one. List each page that renders what
+you changed and each state it can be in (new and saved, empty and full), and
+drive each. Pass context a component needs as a required prop, null when
+absent, so a page that forgets it fails to compile. Check once from a fresh
+clone and in a second time zone.
+
+Run `npm run typecheck` and `npm run lint` before calling any step done; both
+must be clean. The template ships `next/core-web-vitals` lint rules. Treat a
+`react-hooks/exhaustive-deps` warning as a bug until proven otherwise.
+
+**7. Make the proof repeatable.** Once the main flow works, run
+`create-verification-skill` so the app gets its own `verify-<app>` skill: a
+scripted launch, drive and evidence recipe the next agent can rerun. Before a
+risky change to shared maths or data shape, run `blast-radius`. Fix bugs with a
+failing test first when the test is cheap (`tdd`). Run `interrogate` for a
+two-model review before a handoff.
+
+When a screen has no recipe and there is a genuine design fork, run `arena`:
+three candidates (two Claude, one Codex) build it in separate worktrees, a
+judge scores them, and the best one becomes the base with the strongest parts
+of the others grafted in. It costs about three builds; never use it for bug
+fixes.
+
 ## Hard rules
 
 These are what make the apps look like siblings. Breaking one is a bug even
@@ -156,3 +179,9 @@ Comments in code explain *why*, not what.
 Classify it the same way, then run `docs/CHECKLIST.md` and the archetype
 addendum against it. Report what drifted, worst first. Fix by replacing
 bespoke markup with parts — never by adding CSS.
+
+## Before any handoff
+
+Before a factory-built app is handed to another team, run the `prototype-handoff`
+skill if you have it: an honest enterprise-readiness review, then an architecture
+page in the team's wiki.
